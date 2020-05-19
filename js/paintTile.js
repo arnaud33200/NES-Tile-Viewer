@@ -1,6 +1,16 @@
 
 var colorPalette = ["#000000", "#c9b447", "#6f91ca", "#b52875"];
 
+const otherPalette = [
+{ title: "Default", colors: ["#000000", "#c9b447", "#6f91ca", "#b52875"]},
+{ title: "Classic", colors: ["#141414", "#ff9b3b", "#8c7300", "#da2a00"]},
+{ title: "Grey", colors: ["#000000", "#cbcbcb", "#929292", "#4a4a4a"]},
+{ title: "Game Boy", colors: ["#0f380f", "#9bbc0f", "#8bac0f", "#306230"]},
+{ title: "Fire", colors: ["#810000", "#eee500", "#b67000", "#d33600"]},
+{ title: "Darkness", colors: ["#ffffff", "#3b0087", "#8f47b2", "#c17bc7"]},
+{ title: "Rainbow", colors: ["#2933b6", "#e9eb3e", "#00c94e", "#d4006a"]}
+];
+
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 function dataToHexString(bytes, offset) {

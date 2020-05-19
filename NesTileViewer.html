@@ -30,7 +30,7 @@
 				<div class="card-header">File (*.chr, *.nes, ...)</div>
 				<div class="card-body">
 
-					<input type="file" id="file-selector">
+					<input type="file" id="fileSelector" style="width: 100%">
 				</div>
 			</div>
 
@@ -45,38 +45,12 @@
 						<td><input class="colorPalettePicker" type="color" id="colorPicker4" onchange="onColorClicked(4)"></td>
 					</tr></table>
 
-					// TODO: implement select other colors
-
 					<div class="dropdown" style="padding-top: 10px">
 						<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Other colors</button>
-						<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-							<a class="dropdown-item" href="#">
-								<table><tr>
-									<td><h6 style="margin-right: 20px; margin-top: .5rem;">Default</h6></td>
-									<td><div class="paletteSelector" style="background: #000000"></div></td>
-									<td><div class="paletteSelector" style="background: #6f91ca"></div></td>
-									<td><div class="paletteSelector" style="background: #c9b447"></div></td>
-									<td><div class="paletteSelector" style="background: #b52875"></div></td>
-								</tr></table>
-							</a>
-							<a class="dropdown-item" href="#">
-								<table><tr>
-									<td><h6 style="margin-right: 20px; margin-top: .5rem;">Default</h6></td>
-									<td><div class="paletteSelector" style="background: #000000"></div></td>
-									<td><div class="paletteSelector" style="background: #6f91ca"></div></td>
-									<td><div class="paletteSelector" style="background: #c9b447"></div></td>
-									<td><div class="paletteSelector" style="background: #b52875"></div></td>
-								</tr></table>
-							</a>
-							<a class="dropdown-item" href="#">
-								<table><tr>
-									<td><h6 style="margin-right: 20px; margin-top: .5rem;">Default</h6></td>
-									<td><div class="paletteSelector" style="background: #000000"></div></td>
-									<td><div class="paletteSelector" style="background: #6f91ca"></div></td>
-									<td><div class="paletteSelector" style="background: #c9b447"></div></td>
-									<td><div class="paletteSelector" style="background: #b52875"></div></td>
-								</tr></table>
-							</a>
+						<div id="dropdownOtherColor" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+							
+							<!-- FILLED PROGRAMATICALLY -->
+
 						</div>
 					</div>
 				</div>
@@ -111,6 +85,7 @@
 
 		<div style="margin-left: 330px">
 			<div class="card">
+				<div class="card-header">Tiles</div>
 				<div class="card-body">
 					<canvas id="myCanvas" width="700" height="4600"></canvas>
 				</div>
@@ -123,7 +98,7 @@
 	<script>
 		var currentBytes = null;
 
-		const fileSelector = document.getElementById('file-selector');
+		const fileSelector = document.getElementById('fileSelector');
 		fileSelector.addEventListener('change', (event) => {
 			const fileList = event.target.files;
 			var file = fileList[0];
@@ -157,11 +132,62 @@
 			lastPickedColorTime = nowTime;
 		}
 
-		document.getElementById('colorPicker1').value = colorPalette[0];
-		document.getElementById('colorPicker2').value = colorPalette[1];
-		document.getElementById('colorPicker3').value = colorPalette[2];
-		document.getElementById('colorPicker4').value = colorPalette[3];
+		function updateSelectedPalette(colors) {
+			colors.forEach(function(color, i) {
+				document.getElementById('colorPicker' + (i+1)).value = color;	
+			});
+		}
+		updateSelectedPalette(colorPalette);
 
+		function createElement(name, attributes) {
+			var element = document.createElement(name);
+			Object.keys(attributes).forEach(function(key, i) {
+				element[key] = attributes[key];
+			});
+			return element;
+		}
+
+		Element.prototype.addChild = function(child) {
+			this.appendChild(child);
+			return this;
+		};
+
+		Element.prototype.addAttributes = function(attributes) {
+			Object.keys(attributes).forEach(function(key, i) {
+				this[key] = attributes[key];
+			});
+			return this;
+		};
+
+		var dropdown = document.getElementById('dropdownOtherColor');
+		otherPalette.forEach(function(palette, i) {
+			var dropItem = createElement('a', { 
+				className : 'dropdown-item',
+				onclick : function() { colorSelected(i) }
+			})
+
+			var tr = document.createElement("tr");
+			tr.appendChild(createElement("td", { style : "width: 110px" })
+				.addChild(createElement('h6', { 
+				style : "margin-right: 20px; margin-top: .5rem;",
+				innerHTML: palette.title
+			})));
+			palette.colors.forEach(function(color, i) {
+				tr.appendChild(document.createElement("td").addChild(createElement('div', { 
+					style : "background: " + color,
+					className : "paletteSelector"
+				})));
+			});
+
+			dropItem.appendChild(document.createElement("table").addChild(tr));
+			dropdown.appendChild(dropItem);
+		});
+
+		function colorSelected(index) {
+			colorPalette = otherPalette[index].colors;
+			updateSelectedPalette(colorPalette);
+			paintTileFromBytesRow(currentBytes);
+		}
 
 		// Example 
 		const testHexBytes = ["ff", "ff", "99", "81", "c3", "e7", "ff", "ff", "ff", "99", "66", "7e", "bd", "db", "e7", "ff", "00", "42", "24", "18", "18", "24", "42", "00", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "c3", "bd", "bd", "bd", "bd", "c3", "ff", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00"];
