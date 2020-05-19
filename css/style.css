@@ -1,3 +1,10 @@
+body {
+  background-image: url("../tile_background.svg");
+  /*background: #c7c7c7;*/
+  background-repeat: repeat;
+  padding: 20px;
+}
+
 .colorPalettePicker {
 	width: 40px;
     height: 44px;
