@@ -26,7 +26,7 @@
 				NES Tile Viewer
 			</h2>
 
-			<div class="card">
+			<div class="card shadow">
 				<div class="card-header">File (*.chr, *.nes, ...)</div>
 				<div class="card-body">
 
@@ -34,7 +34,7 @@
 				</div>
 			</div>
 
-			<div class="card" style="margin-top: 20px">
+			<div class="card shadow" style="margin-top: 20px">
 				<div class="card-header">Color Palette</div>
 				<div class="card-body">
 
@@ -58,23 +58,31 @@
 				</div>
 			</div>
 
-			<div class="card" style="margin-top: 20px">
+			<div class="card shadow" style="margin-top: 20px">
 				<div class="card-header">Tile Settings</div>
 				<div class="card-body">
-					// TODO: implement settings action
-
 					<form>
+						<div class="form-row">
+							<div class="col"><div class="form-group">
+								<label for="tilePerRowRange"><span id="tilePerRowLabel" class="badge badge-secondary">16</span> Tiles / Row</label>
+								<input type="range" class="form-control-range" id="tilePerRowRange" value="16" min="1" max="24" onchange="updateTilePerRow(this.value)">
+							</div></div>
+							<div class="col"><div class="form-group">
+								<label for="pixelPerTileRange"><span id="pixelPerTileLabel" class="badge badge-secondary">8</span> Pixels / Tile</label>
+								<input type="range" class="form-control-range" id="pixelPerTileRange" value="8" min="1" max="16" onchange="updatePixelPerTile(this.value)">
+							</div></div>
+						</div>
 						<div class="form-row">
 							<div class="col">
 								<div class="form-group">
-									<label for="pixelPaddingInput">Pixel Padding</label>
-									<input type="number" class="form-control" id="pixelPaddingInput" value="0">
+									<label for="tilePaddingInput"><span id="tilePaddingRange" class="badge badge-secondary">5</span> Tile Padding</label>
+									<input type="range" class="form-control-range" id="tilePaddingInput" value="5" min="0" max="20" onchange="updateTilePadding(this.value)">
 								</div>
 							</div>
 							<div class="col">
 								<div class="form-group">
-									<label for="tilePaddingInput">Tile Padding</label>
-									<input type="number" class="form-control" id="tilePaddingInput" value="5">
+									<label for="pixelPaddingInput"><span id="pixelPaddingRange" class="badge badge-secondary">0</span> Pixel Padding</label>
+									<input type="range" class="form-control-range" id="pixelPaddingInput" value="0" min="0" max="10" onchange="updatePixelPadding(this.value)">
 								</div>
 							</div>
 						</div>
@@ -86,7 +94,7 @@
 
 
 		<div style="margin-left: 330px">
-			<div class="card">
+			<div class="card shadow">
 				<div class="card-header">Tiles</div>
 				<div class="card-body">
 					<canvas id="myCanvas" width="700" height="4600"></canvas>
@@ -171,9 +179,9 @@
 			var tr = document.createElement("tr");
 			tr.appendChild(createElement("td", { style : "width: 110px" })
 				.addChild(createElement('h6', { 
-				style : "margin-right: 20px; margin-top: .5rem;",
-				innerHTML: palette.title
-			})));
+					style : "margin-right: 20px; margin-top: .5rem;",
+					innerHTML: palette.title
+				})));
 			palette.colors.forEach(function(color, i) {
 				tr.appendChild(document.createElement("td").addChild(createElement('div', { 
 					style : "background: " + color,
@@ -200,6 +208,29 @@
 			}
 			colorPalette = newColors;
 			updateSelectedPalette(colorPalette);
+			paintTileFromBytesRow(currentBytes);
+		}
+
+		function updateTilePerRow(value) {
+			document.getElementById("tilePerRowLabel").innerHTML = value;
+			tilePerRow = parseInt(value);
+			paintTileFromBytesRow(currentBytes);
+		}
+
+		function updatePixelPerTile(value) {
+			document.getElementById("pixelPerTileLabel").innerHTML = value;
+			tileWidthPixelCount = parseInt(value);
+			paintTileFromBytesRow(currentBytes);
+		}
+
+		function updateTilePadding(value) {
+			document.getElementById("tilePaddingRange").innerHTML = value;
+			tilepaddingSize = parseInt(value);
+			paintTileFromBytesRow(currentBytes);
+		}
+		function updatePixelPadding(value) {
+			document.getElementById("pixelPaddingRange").innerHTML = value;
+			pixelpaddingSize = parseInt(value);
 			paintTileFromBytesRow(currentBytes);
 		}
 
