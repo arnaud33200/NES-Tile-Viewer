@@ -1,0 +1,79 @@
+function dataToHexString(bytes, offset) {
+	var bytedata = "";
+	var size = 1;
+
+	for (var i = 0; i < size; i++) {
+		var c = (bytes[offset+i]).toString(16);
+		bytedata += c.length == 1 ? "0"+c : c;
+	}
+
+	var outputText = "";
+	for (var i=0; i<size; i++) {
+		var x = bytedata.substring( i*2 , i*2+2 );
+		outputText += x + ((i<size-1) ? " " : "" );
+	}		
+	return outputText;
+}
+
+function hexToBinary(hex) {
+	return ("00000000" + (parseInt(hex, 16)).toString(2)).substr(-8);
+}
+
+function dataToBinary(bytes, offset) {
+	return hexToBinary(dataToHexString(bytes, offset));
+}
+
+function getTileXyIndex(tileIndex, hexPerTile, tilePerRow) {
+	return {
+		x: Math.floor(tileIndex / hexPerTile) % tilePerRow,
+		y: Math.floor(tileIndex / (hexPerTile * tilePerRow))
+	}
+}
+
+function paintTileFromBytesRow(bytes) {
+	var canvas = document.getElementById("myCanvas");
+	var context = canvas.getContext("2d");
+	context.clearRect(0, 0, canvas.width, canvas.height);
+
+	const tilepaddingSize = 5;
+	const pixelpaddingSize = 0;
+
+	const rowPixelCount = 8;	
+	const tilePerRow = 16;
+	
+	// const pixelSize = 10;
+	const pixelSize = Math.floor(canvas.width / tilePerRow / rowPixelCount);
+	
+	const tileSize = rowPixelCount * pixelSize;
+
+	const layerCount = 2;
+	const hexPerTile = rowPixelCount * layerCount;
+
+	const maxVerticalCount = getTileXyIndex(bytes.length, hexPerTile, tilePerRow).y + 1;
+	canvas.height = (maxVerticalCount * rowPixelCount * pixelSize) + (maxVerticalCount * tilepaddingSize);
+
+	const colorPalette = ["#000000" ,"#6f91ca", "#c9b447", "#b52875"];
+
+	for (var tileIndex = 0; tileIndex < bytes.length; tileIndex += hexPerTile) {
+
+		const tileXyIndex = getTileXyIndex(tileIndex, hexPerTile, tilePerRow);
+
+		const offetX = tileXyIndex.x * (tileSize + tilepaddingSize) + (tileXyIndex.x * rowPixelCount * pixelpaddingSize);
+		const offetY = tileXyIndex.y * (tileSize + tilepaddingSize) + (tileXyIndex.y * rowPixelCount * pixelpaddingSize);
+
+		for (var y = tileIndex; y < tileIndex + rowPixelCount; y++) {
+
+			const binary1 = dataToBinary(bytes, y);
+			const binary2 = dataToBinary(bytes, y+rowPixelCount);
+
+			for (var x = 0; x < binary1.length; x++) {
+				const colorIndex = parseInt(binary1.charAt(x)) + (2*parseInt(binary2.charAt(x)));
+				context.fillStyle = colorPalette[colorIndex];
+
+				const posX = (x * pixelSize) + offetX + (x * pixelpaddingSize);
+				const posY = ((y % rowPixelCount) * pixelSize) + offetY + ((y %rowPixelCount) * pixelpaddingSize);
+				context.fillRect(posX, posY, pixelSize, pixelSize);
+			}
+		}
+	}
+}

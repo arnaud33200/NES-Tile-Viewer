@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>NES Tile Viewer</title>
+	<script type="text/javascript" src="js/paintTile.js"></script>
+</head>
+<body style="display: grid; padding: 20px">
+
+	<input type="file" id="file-selector">
+	<script>
+		const fileSelector = document.getElementById('file-selector');
+		fileSelector.addEventListener('change', (event) => {
+			const fileList = event.target.files;
+			var file = fileList[0];
+			if (!file) {
+				return;
+			}
+			var reader = new FileReader();
+			reader.readAsArrayBuffer(file);
+
+			reader.onload = function (evt) {
+				var bytes = new Uint8Array(evt.target.result);
+				paintTileFromBytesRow(bytes)				
+			}
+			reader.onerror = function (evt) {
+				console.log("error reading file");
+			}		
+			
+		});
+	</script>
+
+	<canvas id="myCanvas" width="600" height="4600" style="margin-top: 20px; border: 1px solid #c5c5c5;"></canvas>
+
+	<script>
+		// Example 
+		const testHexBytes = ["ff", "ff", "99", "81", "c3", "e7", "ff", "ff", "ff", "99", "66", "7e", "bd", "db", "e7", "ff", "00", "42", "24", "18", "18", "24", "42", "00", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "c3", "bd", "bd", "bd", "bd", "c3", "ff", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00"];
+		paintTileFromBytesRow(testHexBytes);
+
+	</script>
+
+</body>
+</html>
