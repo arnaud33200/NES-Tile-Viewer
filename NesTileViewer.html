@@ -129,13 +129,23 @@
 			reader.onload = function (evt) {
 				var bytes = new Uint8Array(evt.target.result);
 				currentBytes = bytes;
-				paintAllTilesFromBytesRow(bytes)				
+				selectedByteIndex = -1;
+				refreshTileViewerCanvas();				
 			}
 			reader.onerror = function (evt) {
 				console.log("error reading file");
 			}		
 
 		});
+
+		function refreshTileViewerCanvas() {
+			paintAllTilesFromBytesRow(currentBytes);
+			updateTilePreviewCanvas();
+			// refresh palette
+			colorPalette.forEach(function(color, i) {
+				document.getElementById('colorPicker' + (i+1)).value = color;	
+			});	
+		}
 
 		var lastPickedColorTime = 0;
 		function onColorClicked(index) {
@@ -146,16 +156,9 @@
 			}
 			const colorValue = document.getElementById("colorPicker" + index).value;
 			colorPalette[index-1] = colorValue;
-			paintAllTilesFromBytesRow(currentBytes);
+			refreshTileViewerCanvas();
 			lastPickedColorTime = nowTime;
 		}
-
-		function updateSelectedPalette(colors) {
-			colors.forEach(function(color, i) {
-				document.getElementById('colorPicker' + (i+1)).value = color;	
-			});
-		}
-		updateSelectedPalette(colorPalette);
 
 		function createElement(name, attributes) {
 			var element = document.createElement(name);
@@ -203,8 +206,7 @@
 
 		function colorSelected(index) {
 			colorPalette = otherPalette[index].colors;
-			updateSelectedPalette(colorPalette);
-			paintAllTilesFromBytesRow(currentBytes);
+			refreshTileViewerCanvas();
 		}
 
 		function shiftColor(orientation) {
@@ -215,48 +217,53 @@
 				newColors[i] = colorPalette[index];
 			}
 			colorPalette = newColors;
-			updateSelectedPalette(colorPalette);
-			paintAllTilesFromBytesRow(currentBytes);
+			refreshTileViewerCanvas();
 		}
 
 		function updateTilePerRow(value) {
 			document.getElementById("tilePerRowLabel").innerHTML = value;
 			tilePerRow = parseInt(value);
-			paintAllTilesFromBytesRow(currentBytes);
+			refreshTileViewerCanvas();
 		}
 
 		function updatePixelPerTile(value) {
 			document.getElementById("pixelPerTileLabel").innerHTML = value;
 			tileWidthPixelCount = parseInt(value);
-			paintAllTilesFromBytesRow(currentBytes);
+			refreshTileViewerCanvas();
 		}
 
 		function updateTilePadding(value) {
 			document.getElementById("tilePaddingRange").innerHTML = value;
 			tilepaddingSize = parseInt(value);
-			paintAllTilesFromBytesRow(currentBytes);
+			refreshTileViewerCanvas();
 		}
 		function updatePixelPadding(value) {
 			document.getElementById("pixelPaddingRange").innerHTML = value;
 			pixelpaddingSize = parseInt(value);
-			paintAllTilesFromBytesRow(currentBytes);
+			refreshTileViewerCanvas();
 		}
 
 		document.getElementById("myCanvas").addEventListener('click', (e) => {
-			var byteIndex = getTileBytesIndexFromCoordinate(e.layerX, e.layerY);
+			selectedByteIndex = getTileBytesIndexFromCoordinate(e.layerX, e.layerY);
+			updateTilePreviewCanvas();
+		});
+
+		var selectedByteIndex = -1;
+		function updateTilePreviewCanvas() {
 			var canvas = document.getElementById("previewCanvas");
 			var context = canvas.getContext("2d");
 			context.clearRect(0, 0, canvas.width, canvas.height);
+			if (selectedByteIndex < 0) { return; }
 
 			const pixelPadding = 2;
 			const size = Math.floor((canvas.width - (tileWidthPixelCount * pixelPadding)) / tileWidthPixelCount);
-			paintSingeTile(context, size, currentBytes, byteIndex, 0, 0, pixelPadding);
-		});
+			paintSingeTile(context, size, currentBytes, selectedByteIndex, 0, 0, pixelPadding);
+		}
 
 		// Example 
 		const testHexBytes = ["ff", "ff", "99", "81", "c3", "e7", "ff", "ff", "ff", "99", "66", "7e", "bd", "db", "e7", "ff", "00", "42", "24", "18", "18", "24", "42", "00", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "c3", "bd", "bd", "bd", "bd", "c3", "ff", "ff", "ff", "99", "81", "c3", "e7", "ff", "ff", "ff", "99", "66", "7e", "bd", "db", "e7", "ff", "00", "42", "24", "18", "18", "24", "42", "00", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "c3", "bd", "bd", "bd", "bd", "c3", "ff", "ff", "ff", "99", "81", "c3", "e7", "ff", "ff", "ff", "99", "66", "7e", "bd", "db", "e7", "ff", "00", "42", "24", "18", "18", "24", "42", "00", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "c3", "bd", "bd", "bd", "bd", "c3", "ff", "ff", "ff", "99", "81", "c3", "e7", "ff", "ff", "ff", "99", "66", "7e", "bd", "db", "e7", "ff", "00", "42", "24", "18", "18", "24", "42", "00", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "c3", "bd", "bd", "bd", "bd", "c3", "ff", "ff", "ff", "99", "81", "c3", "e7", "ff", "ff", "ff", "99", "66", "7e", "bd", "db", "e7", "ff", "00", "42", "24", "18", "18", "24", "42", "00", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "c3", "bd", "bd", "bd", "bd", "c3", "ff", "ff", "ff", "99", "81", "c3", "e7", "ff", "ff", "ff", "99", "66", "7e", "bd", "db", "e7", "ff", "00", "42", "24", "18", "18", "24", "42", "00", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "c3", "bd", "bd", "bd", "bd", "c3", "ff", "ff", "ff", "99", "81", "c3", "e7", "ff", "ff", "ff", "99", "66", "7e", "bd", "db", "e7", "ff", "00", "42", "24", "18", "18", "24", "42", "00", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "c3", "bd", "bd", "bd", "bd", "c3", "ff", "ff", "ff", "99", "81", "c3", "e7", "ff", "ff", "ff", "99", "66", "7e", "bd", "db", "e7", "ff", "00", "42", "24", "18", "18", "24", "42", "00", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "c3", "bd", "bd", "bd", "bd", "c3", "ff", "ff", "ff", "99", "81", "c3", "e7", "ff", "ff", "ff", "99", "66", "7e", "bd", "db", "e7", "ff", "00", "42", "24", "18", "18", "24", "42", "00", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "c3", "bd", "bd", "bd", "bd", "c3", "ff"];
 		currentBytes = testHexBytes;
-		paintAllTilesFromBytesRow(testHexBytes);
+		refreshTileViewerCanvas();
 
 	</script>
 
