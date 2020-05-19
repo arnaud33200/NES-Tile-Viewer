@@ -11,6 +11,8 @@ const otherPalette = [
 { title: "Rainbow", colors: ["#2933b6", "#e9eb3e", "#00c94e", "#d4006a"]}
 ];
 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~
+
 var tilePerRow = 16;
 var tileWidthPixelCount = 8;	
 
@@ -20,7 +22,11 @@ var pixelpaddingSize = 0;
 const layerCount = 2;
 const hexPerTile = tileWidthPixelCount * layerCount;	
 
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// ~~~~~~~~~~~~~~~~~~~~~~~~~
+
+var currentBytes = null;
+
+// ################################################################################
 
 function dataToHexString(bytes, offset) {
 	var bytedata = "";

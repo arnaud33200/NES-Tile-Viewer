@@ -8,6 +8,7 @@
 	<link rel="stylesheet" href="css/bootstrap.min.css">
 	<link rel="stylesheet" href="css/style.css">
 
+	<script type="text/javascript" src="js/main.js"></script>
 	<script type="text/javascript" src="js/paintTile.js"></script>
 
 	<script src="js/jquery-3.5.1.slim.min.js"></script>
@@ -114,151 +115,21 @@
 	</div></div>
 
 	<script>
-		var currentBytes = null;
 
 		const fileSelector = document.getElementById('fileSelector');
 		fileSelector.addEventListener('change', (event) => {
 			const fileList = event.target.files;
 			var file = fileList[0];
-			if (!file) {
-				return;
-			}
-			var reader = new FileReader();
-			reader.readAsArrayBuffer(file);
-
-			reader.onload = function (evt) {
-				var bytes = new Uint8Array(evt.target.result);
-				currentBytes = bytes;
-				selectedByteIndex = -1;
-				refreshTileViewerCanvas();				
-			}
-			reader.onerror = function (evt) {
-				console.log("error reading file");
-			}		
-
+			loadFileBytes(file)		
 		});
-
-		function refreshTileViewerCanvas() {
-			paintAllTilesFromBytesRow(currentBytes);
-			updateTilePreviewCanvas();
-			// refresh palette
-			colorPalette.forEach(function(color, i) {
-				document.getElementById('colorPicker' + (i+1)).value = color;	
-			});	
-		}
-
-		var lastPickedColorTime = 0;
-		function onColorClicked(index) {
-			const nowTime = new Date().getTime();
-			const timeDiff = nowTime - lastPickedColorTime
-			if (timeDiff < 500) {
-				return;
-			}
-			const colorValue = document.getElementById("colorPicker" + index).value;
-			colorPalette[index-1] = colorValue;
-			refreshTileViewerCanvas();
-			lastPickedColorTime = nowTime;
-		}
-
-		function createElement(name, attributes) {
-			var element = document.createElement(name);
-			Object.keys(attributes).forEach(function(key, i) {
-				element[key] = attributes[key];
-			});
-			return element;
-		}
-
-		Element.prototype.addChild = function(child) {
-			this.appendChild(child);
-			return this;
-		};
-
-		Element.prototype.addAttributes = function(attributes) {
-			Object.keys(attributes).forEach(function(key, i) {
-				this[key] = attributes[key];
-			});
-			return this;
-		};
-
-		var dropdown = document.getElementById('dropdownOtherColor');
-		otherPalette.forEach(function(palette, i) {
-			var dropItem = createElement('a', { 
-				className : 'dropdown-item',
-				onclick : function() { colorSelected(i) }
-			})
-
-			var tr = document.createElement("tr");
-			tr.appendChild(createElement("td", { style : "width: 110px" })
-				.addChild(createElement('h6', { 
-					style : "margin-right: 20px; margin-top: .5rem;",
-					innerHTML: palette.title
-				})));
-			palette.colors.forEach(function(color, i) {
-				tr.appendChild(document.createElement("td").addChild(createElement('div', { 
-					style : "background: " + color,
-					className : "paletteSelector"
-				})));
-			});
-
-			dropItem.appendChild(document.createElement("table").addChild(tr));
-			dropdown.appendChild(dropItem);
-		});
-
-		function colorSelected(index) {
-			colorPalette = otherPalette[index].colors;
-			refreshTileViewerCanvas();
-		}
-
-		function shiftColor(orientation) {
-			var newColors = [];
-			for (var i = 0; i < colorPalette.length; i++) {
-				var index = (i + orientation) % (colorPalette.length);
-				index = index < 0 ? colorPalette.length -1 : index;
-				newColors[i] = colorPalette[index];
-			}
-			colorPalette = newColors;
-			refreshTileViewerCanvas();
-		}
-
-		function updateTilePerRow(value) {
-			document.getElementById("tilePerRowLabel").innerHTML = value;
-			tilePerRow = parseInt(value);
-			refreshTileViewerCanvas();
-		}
-
-		function updatePixelPerTile(value) {
-			document.getElementById("pixelPerTileLabel").innerHTML = value;
-			tileWidthPixelCount = parseInt(value);
-			refreshTileViewerCanvas();
-		}
-
-		function updateTilePadding(value) {
-			document.getElementById("tilePaddingRange").innerHTML = value;
-			tilepaddingSize = parseInt(value);
-			refreshTileViewerCanvas();
-		}
-		function updatePixelPadding(value) {
-			document.getElementById("pixelPaddingRange").innerHTML = value;
-			pixelpaddingSize = parseInt(value);
-			refreshTileViewerCanvas();
-		}
 
 		document.getElementById("myCanvas").addEventListener('click', (e) => {
 			selectedByteIndex = getTileBytesIndexFromCoordinate(e.layerX, e.layerY);
 			updateTilePreviewCanvas();
 		});
 
-		var selectedByteIndex = -1;
-		function updateTilePreviewCanvas() {
-			var canvas = document.getElementById("previewCanvas");
-			var context = canvas.getContext("2d");
-			context.clearRect(0, 0, canvas.width, canvas.height);
-			if (selectedByteIndex < 0) { return; }
-
-			const pixelPadding = 2;
-			const size = Math.floor((canvas.width - (tileWidthPixelCount * pixelPadding)) / tileWidthPixelCount);
-			paintSingeTile(context, size, currentBytes, selectedByteIndex, 0, 0, pixelPadding);
-		}
+		var dropdown = document.getElementById('dropdownOtherColor');
+		buildOtherColorPaletteTable(dropdown)		
 
 		// Example 
 		const testHexBytes = ["ff", "ff", "99", "81", "c3", "e7", "ff", "ff", "ff", "99", "66", "7e", "bd", "db", "e7", "ff", "00", "42", "24", "18", "18", "24", "42", "00", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "c3", "bd", "bd", "bd", "bd", "c3", "ff", "ff", "ff", "99", "81", "c3", "e7", "ff", "ff", "ff", "99", "66", "7e", "bd", "db", "e7", "ff", "00", "42", "24", "18", "18", "24", "42", "00", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "c3", "bd", "bd", "bd", "bd", "c3", "ff", "ff", "ff", "99", "81", "c3", "e7", "ff", "ff", "ff", "99", "66", "7e", "bd", "db", "e7", "ff", "00", "42", "24", "18", "18", "24", "42", "00", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "c3", "bd", "bd", "bd", "bd", "c3", "ff", "ff", "ff", "99", "81", "c3", "e7", "ff", "ff", "ff", "99", "66", "7e", "bd", "db", "e7", "ff", "00", "42", "24", "18", "18", "24", "42", "00", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "c3", "bd", "bd", "bd", "bd", "c3", "ff", "ff", "ff", "99", "81", "c3", "e7", "ff", "ff", "ff", "99", "66", "7e", "bd", "db", "e7", "ff", "00", "42", "24", "18", "18", "24", "42", "00", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "c3", "bd", "bd", "bd", "bd", "c3", "ff", "ff", "ff", "99", "81", "c3", "e7", "ff", "ff", "ff", "99", "66", "7e", "bd", "db", "e7", "ff", "00", "42", "24", "18", "18", "24", "42", "00", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "c3", "bd", "bd", "bd", "bd", "c3", "ff", "ff", "ff", "99", "81", "c3", "e7", "ff", "ff", "ff", "99", "66", "7e", "bd", "db", "e7", "ff", "00", "42", "24", "18", "18", "24", "42", "00", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "c3", "bd", "bd", "bd", "bd", "c3", "ff", "ff", "ff", "99", "81", "c3", "e7", "ff", "ff", "ff", "99", "66", "7e", "bd", "db", "e7", "ff", "00", "42", "24", "18", "18", "24", "42", "00", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "c3", "bd", "bd", "bd", "bd", "c3", "ff", "ff", "ff", "99", "81", "c3", "e7", "ff", "ff", "ff", "99", "66", "7e", "bd", "db", "e7", "ff", "00", "42", "24", "18", "18", "24", "42", "00", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "c3", "bd", "bd", "bd", "bd", "c3", "ff"];
