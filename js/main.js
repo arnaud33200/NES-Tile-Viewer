@@ -1,13 +1,13 @@
 function loadFileBytes(file) {
 	if (!file) { return; }
-	
+
 	var reader = new FileReader();
 	reader.readAsArrayBuffer(file);
 
 	reader.onload = function (evt) {
 		var bytes = new Uint8Array(evt.target.result);
 		currentBytes = bytes;
-		selectedByteIndex = -1;
+		cleanSelectedPreview();
 		refreshTileViewerCanvas();				
 	}
 	reader.onerror = function (evt) {
@@ -34,6 +34,17 @@ function updateTilePreviewCanvas() {
 	const pixelPadding = 2;
 	const size = Math.floor((canvas.width - (tileWidthPixelCount * pixelPadding)) / tileWidthPixelCount);
 	paintSingeTile(context, size, currentBytes, selectedByteIndex, 0, 0, pixelPadding);
+
+	document.getElementById("previewTileHex").innerHTML = getTileHexString(currentBytes, selectedByteIndex);
+}
+
+function cleanSelectedPreview() {	
+	selectedByteIndex = -1;
+	var canvas = document.getElementById("previewCanvas");
+	var context = canvas.getContext("2d");
+	context.clearRect(0, 0, canvas.width, canvas.height);
+
+	document.getElementById("previewTileHex").innerHTML = "";
 }
 
 function buildOtherColorPaletteTable(dropdown) {

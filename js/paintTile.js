@@ -117,3 +117,13 @@ function paintSingeTile(context, pixelSize, bytes, byteIndex, offetX, offetY, pi
 		}
 	}
 }
+
+function getTileHexString(bytes, byteIndex) {
+	var tileHexString = "";
+	for (var y = byteIndex; y < byteIndex + (tileWidthPixelCount * layerCount); y++) {
+		const space = (y - byteIndex) % 2 == 0 ? " " : "";
+		const hexString = dataToHexString(bytes, y);
+		tileHexString += (tileHexString.length == 0 ? "" : space) + hexString;
+	}
+	return tileHexString;
+}
