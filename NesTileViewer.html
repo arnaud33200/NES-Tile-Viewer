@@ -5,9 +5,10 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-	<script type="text/javascript" src="js/paintTile.js"></script>
-
 	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/style.css">
+
+	<script type="text/javascript" src="js/paintTile.js"></script>
 
 	<script src="js/jquery-3.5.1.slim.min.js"></script>
 	<script src="js/popper.min.js"></script>
@@ -16,20 +17,112 @@
 </head>
 <body style="padding: 20px">
 
-	<div class="container">
-		<div class="row">
+	<div class="container"><div class="row">
 
-			<div class="col-">
-				<input type="file" id="file-selector">
+		<div style="position: fixed; width: 300px">
+
+			<h2 style="padding-bottom: 5px">
+				<!-- <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/NES-Cartridge.jpg/250px-NES-Cartridge.jpg" style="width: 50px;"> -->
+				NES Tile Viewer
+			</h2>
+
+			<div class="card">
+				<div class="card-header">File (*.chr, *.nes, ...)</div>
+				<div class="card-body">
+
+					<input type="file" id="file-selector">
+				</div>
 			</div>
 
-			<div class="col-md">
-				<canvas id="myCanvas" width="600" height="4600" style="border: 1px solid #c5c5c5;"></canvas>
+			<div class="card" style="margin-top: 20px">
+				<div class="card-header">Color Palette</div>
+				<div class="card-body">
+
+					<table><tr>
+						<td><input class="colorPalettePicker" type="color" id="colorPicker1" onchange="onColorClicked(1)"></td>
+						<td><input class="colorPalettePicker" type="color" id="colorPicker2" onchange="onColorClicked(2)"></td>
+						<td><input class="colorPalettePicker" type="color" id="colorPicker3" onchange="onColorClicked(3)"></td>
+						<td><input class="colorPalettePicker" type="color" id="colorPicker4" onchange="onColorClicked(4)"></td>
+					</tr></table>
+
+					// TODO: implement select other colors
+
+					<div class="dropdown" style="padding-top: 10px">
+						<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Other colors</button>
+						<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+							<a class="dropdown-item" href="#">
+								<table><tr>
+									<td><h6 style="margin-right: 20px; margin-top: .5rem;">Default</h6></td>
+									<td><div class="paletteSelector" style="background: #000000"></div></td>
+									<td><div class="paletteSelector" style="background: #6f91ca"></div></td>
+									<td><div class="paletteSelector" style="background: #c9b447"></div></td>
+									<td><div class="paletteSelector" style="background: #b52875"></div></td>
+								</tr></table>
+							</a>
+							<a class="dropdown-item" href="#">
+								<table><tr>
+									<td><h6 style="margin-right: 20px; margin-top: .5rem;">Default</h6></td>
+									<td><div class="paletteSelector" style="background: #000000"></div></td>
+									<td><div class="paletteSelector" style="background: #6f91ca"></div></td>
+									<td><div class="paletteSelector" style="background: #c9b447"></div></td>
+									<td><div class="paletteSelector" style="background: #b52875"></div></td>
+								</tr></table>
+							</a>
+							<a class="dropdown-item" href="#">
+								<table><tr>
+									<td><h6 style="margin-right: 20px; margin-top: .5rem;">Default</h6></td>
+									<td><div class="paletteSelector" style="background: #000000"></div></td>
+									<td><div class="paletteSelector" style="background: #6f91ca"></div></td>
+									<td><div class="paletteSelector" style="background: #c9b447"></div></td>
+									<td><div class="paletteSelector" style="background: #b52875"></div></td>
+								</tr></table>
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="card" style="margin-top: 20px">
+				<div class="card-header">Tile Settings</div>
+				<div class="card-body">
+					// TODO: implement settings action
+
+					<form>
+						<div class="form-row">
+							<div class="col">
+								<div class="form-group">
+									<label for="pixelPaddingInput">Pixel Padding</label>
+									<input type="number" class="form-control" id="pixelPaddingInput" value="0">
+								</div>
+							</div>
+							<div class="col">
+								<div class="form-group">
+									<label for="tilePaddingInput">Tile Padding</label>
+									<input type="number" class="form-control" id="tilePaddingInput" value="5">
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
 			</div>
 		</div>
-	</div>
+
+
+
+		<div style="margin-left: 330px">
+			<div class="card">
+				<div class="card-body">
+					<canvas id="myCanvas" width="700" height="4600"></canvas>
+				</div>
+			</div>
+
+
+		</div>
+	</div></div>
 
 	<script>
+		var currentBytes = null;
+
 		const fileSelector = document.getElementById('file-selector');
 		fileSelector.addEventListener('change', (event) => {
 			const fileList = event.target.files;
@@ -42,16 +135,37 @@
 
 			reader.onload = function (evt) {
 				var bytes = new Uint8Array(evt.target.result);
+				currentBytes = bytes;
 				paintTileFromBytesRow(bytes)				
 			}
 			reader.onerror = function (evt) {
 				console.log("error reading file");
 			}		
-			
+
 		});
+
+		var lastPickedColorTime = 0;
+		function onColorClicked(index) {
+			const nowTime = new Date().getTime();
+			const timeDiff = nowTime - lastPickedColorTime
+			if (timeDiff < 500) {
+				return;
+			}
+			const colorValue = document.getElementById("colorPicker" + index).value;
+			colorPalette[index-1] = colorValue;
+			paintTileFromBytesRow(currentBytes);
+			lastPickedColorTime = nowTime;
+		}
+
+		document.getElementById('colorPicker1').value = colorPalette[0];
+		document.getElementById('colorPicker2').value = colorPalette[1];
+		document.getElementById('colorPicker3').value = colorPalette[2];
+		document.getElementById('colorPicker4').value = colorPalette[3];
+
 
 		// Example 
 		const testHexBytes = ["ff", "ff", "99", "81", "c3", "e7", "ff", "ff", "ff", "99", "66", "7e", "bd", "db", "e7", "ff", "00", "42", "24", "18", "18", "24", "42", "00", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "c3", "bd", "bd", "bd", "bd", "c3", "ff", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00"];
+		currentBytes = testHexBytes;
 		paintTileFromBytesRow(testHexBytes);
 
 	</script>

@@ -1,0 +1,12 @@
+.colorPalettePicker {
+	width: 40px;
+    height: 44px;
+    border: 0px;
+    padding: 0px;
+}
+
+.paletteSelector {
+	width: 20px;
+    height: 20px;
+    left: 5px;
+}

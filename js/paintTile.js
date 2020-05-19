@@ -1,3 +1,8 @@
+
+var colorPalette = ["#000000", "#c9b447", "#6f91ca", "#b52875"];
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 function dataToHexString(bytes, offset) {
 	var bytedata = "";
 	var size = 1;
@@ -35,14 +40,14 @@ function paintTileFromBytesRow(bytes) {
 	var context = canvas.getContext("2d");
 	context.clearRect(0, 0, canvas.width, canvas.height);
 
-	const tilepaddingSize = 5;
+	const tilepaddingSize = 2;
 	const pixelpaddingSize = 0;
 
 	const rowPixelCount = 8;	
 	const tilePerRow = 16;
 	
 	// const pixelSize = 10;
-	const pixelSize = Math.floor(canvas.width / tilePerRow / rowPixelCount);
+	const pixelSize = Math.round((canvas.width - (tilePerRow * tilepaddingSize) - (tilePerRow * rowPixelCount * pixelpaddingSize)) / tilePerRow / rowPixelCount, 0);
 	
 	const tileSize = rowPixelCount * pixelSize;
 
@@ -50,9 +55,7 @@ function paintTileFromBytesRow(bytes) {
 	const hexPerTile = rowPixelCount * layerCount;
 
 	const maxVerticalCount = getTileXyIndex(bytes.length, hexPerTile, tilePerRow).y + 1;
-	canvas.height = (maxVerticalCount * rowPixelCount * pixelSize) + (maxVerticalCount * tilepaddingSize);
-
-	const colorPalette = ["#000000" ,"#6f91ca", "#c9b447", "#b52875"];
+	canvas.height = (maxVerticalCount * rowPixelCount * (pixelSize + pixelpaddingSize)) + (maxVerticalCount * tilepaddingSize);
 
 	for (var tileIndex = 0; tileIndex < bytes.length; tileIndex += hexPerTile) {
 
