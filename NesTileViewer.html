@@ -97,12 +97,20 @@
 			<div class="card shadow">
 				<div class="card-header">Tiles</div>
 				<div class="card-body">
-					<canvas id="myCanvas" width="700" height="4600"></canvas>
+					<canvas id="myCanvas" width="550" height="10"></canvas>
 				</div>
 			</div>
-
-
 		</div>
+
+		<div style="margin-left: 330px; position: fixed; right: 20px">
+			<div class="card shadow">
+				<div class="card-header">Selection</div>
+				<div class="card-body">
+					<canvas id="previewCanvas" width="200" height="200"></canvas>
+				</div>
+			</div>
+		</div>
+
 	</div></div>
 
 	<script>
@@ -121,7 +129,7 @@
 			reader.onload = function (evt) {
 				var bytes = new Uint8Array(evt.target.result);
 				currentBytes = bytes;
-				paintTileFromBytesRow(bytes)				
+				paintAllTilesFromBytesRow(bytes)				
 			}
 			reader.onerror = function (evt) {
 				console.log("error reading file");
@@ -138,7 +146,7 @@
 			}
 			const colorValue = document.getElementById("colorPicker" + index).value;
 			colorPalette[index-1] = colorValue;
-			paintTileFromBytesRow(currentBytes);
+			paintAllTilesFromBytesRow(currentBytes);
 			lastPickedColorTime = nowTime;
 		}
 
@@ -196,7 +204,7 @@
 		function colorSelected(index) {
 			colorPalette = otherPalette[index].colors;
 			updateSelectedPalette(colorPalette);
-			paintTileFromBytesRow(currentBytes);
+			paintAllTilesFromBytesRow(currentBytes);
 		}
 
 		function shiftColor(orientation) {
@@ -208,36 +216,47 @@
 			}
 			colorPalette = newColors;
 			updateSelectedPalette(colorPalette);
-			paintTileFromBytesRow(currentBytes);
+			paintAllTilesFromBytesRow(currentBytes);
 		}
 
 		function updateTilePerRow(value) {
 			document.getElementById("tilePerRowLabel").innerHTML = value;
 			tilePerRow = parseInt(value);
-			paintTileFromBytesRow(currentBytes);
+			paintAllTilesFromBytesRow(currentBytes);
 		}
 
 		function updatePixelPerTile(value) {
 			document.getElementById("pixelPerTileLabel").innerHTML = value;
 			tileWidthPixelCount = parseInt(value);
-			paintTileFromBytesRow(currentBytes);
+			paintAllTilesFromBytesRow(currentBytes);
 		}
 
 		function updateTilePadding(value) {
 			document.getElementById("tilePaddingRange").innerHTML = value;
 			tilepaddingSize = parseInt(value);
-			paintTileFromBytesRow(currentBytes);
+			paintAllTilesFromBytesRow(currentBytes);
 		}
 		function updatePixelPadding(value) {
 			document.getElementById("pixelPaddingRange").innerHTML = value;
 			pixelpaddingSize = parseInt(value);
-			paintTileFromBytesRow(currentBytes);
+			paintAllTilesFromBytesRow(currentBytes);
 		}
 
+		document.getElementById("myCanvas").addEventListener('click', (e) => {
+			var byteIndex = getTileBytesIndexFromCoordinate(e.layerX, e.layerY);
+			var canvas = document.getElementById("previewCanvas");
+			var context = canvas.getContext("2d");
+			context.clearRect(0, 0, canvas.width, canvas.height);
+
+			const pixelPadding = 2;
+			const size = Math.floor((canvas.width - (tileWidthPixelCount * pixelPadding)) / tileWidthPixelCount);
+			paintSingeTile(context, size, currentBytes, byteIndex, 0, 0, pixelPadding);
+		});
+
 		// Example 
-		const testHexBytes = ["ff", "ff", "99", "81", "c3", "e7", "ff", "ff", "ff", "99", "66", "7e", "bd", "db", "e7", "ff", "00", "42", "24", "18", "18", "24", "42", "00", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "c3", "bd", "bd", "bd", "bd", "c3", "ff", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00"];
+		const testHexBytes = ["ff", "ff", "99", "81", "c3", "e7", "ff", "ff", "ff", "99", "66", "7e", "bd", "db", "e7", "ff", "00", "42", "24", "18", "18", "24", "42", "00", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "c3", "bd", "bd", "bd", "bd", "c3", "ff", "ff", "ff", "99", "81", "c3", "e7", "ff", "ff", "ff", "99", "66", "7e", "bd", "db", "e7", "ff", "00", "42", "24", "18", "18", "24", "42", "00", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "c3", "bd", "bd", "bd", "bd", "c3", "ff", "ff", "ff", "99", "81", "c3", "e7", "ff", "ff", "ff", "99", "66", "7e", "bd", "db", "e7", "ff", "00", "42", "24", "18", "18", "24", "42", "00", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "c3", "bd", "bd", "bd", "bd", "c3", "ff", "ff", "ff", "99", "81", "c3", "e7", "ff", "ff", "ff", "99", "66", "7e", "bd", "db", "e7", "ff", "00", "42", "24", "18", "18", "24", "42", "00", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "c3", "bd", "bd", "bd", "bd", "c3", "ff", "ff", "ff", "99", "81", "c3", "e7", "ff", "ff", "ff", "99", "66", "7e", "bd", "db", "e7", "ff", "00", "42", "24", "18", "18", "24", "42", "00", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "c3", "bd", "bd", "bd", "bd", "c3", "ff", "ff", "ff", "99", "81", "c3", "e7", "ff", "ff", "ff", "99", "66", "7e", "bd", "db", "e7", "ff", "00", "42", "24", "18", "18", "24", "42", "00", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "c3", "bd", "bd", "bd", "bd", "c3", "ff", "ff", "ff", "99", "81", "c3", "e7", "ff", "ff", "ff", "99", "66", "7e", "bd", "db", "e7", "ff", "00", "42", "24", "18", "18", "24", "42", "00", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "c3", "bd", "bd", "bd", "bd", "c3", "ff", "ff", "ff", "99", "81", "c3", "e7", "ff", "ff", "ff", "99", "66", "7e", "bd", "db", "e7", "ff", "00", "42", "24", "18", "18", "24", "42", "00", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "c3", "bd", "bd", "bd", "bd", "c3", "ff", "ff", "ff", "99", "81", "c3", "e7", "ff", "ff", "ff", "99", "66", "7e", "bd", "db", "e7", "ff", "00", "42", "24", "18", "18", "24", "42", "00", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "c3", "bd", "bd", "bd", "bd", "c3", "ff"];
 		currentBytes = testHexBytes;
-		paintTileFromBytesRow(testHexBytes);
+		paintAllTilesFromBytesRow(testHexBytes);
 
 	</script>
 
