@@ -2,11 +2,33 @@
 <html>
 <head>
 	<title>NES Tile Viewer</title>
-	<script type="text/javascript" src="js/paintTile.js"></script>
-</head>
-<body style="display: grid; padding: 20px">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-	<input type="file" id="file-selector">
+	<script type="text/javascript" src="js/paintTile.js"></script>
+
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+
+	<script src="js/jquery-3.5.1.slim.min.js"></script>
+	<script src="js/popper.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+
+</head>
+<body style="padding: 20px">
+
+	<div class="container">
+		<div class="row">
+
+			<div class="col-">
+				<input type="file" id="file-selector">
+			</div>
+
+			<div class="col-md">
+				<canvas id="myCanvas" width="600" height="4600" style="border: 1px solid #c5c5c5;"></canvas>
+			</div>
+		</div>
+	</div>
+
 	<script>
 		const fileSelector = document.getElementById('file-selector');
 		fileSelector.addEventListener('change', (event) => {
@@ -27,11 +49,7 @@
 			}		
 			
 		});
-	</script>
 
-	<canvas id="myCanvas" width="600" height="4600" style="margin-top: 20px; border: 1px solid #c5c5c5;"></canvas>
-
-	<script>
 		// Example 
 		const testHexBytes = ["ff", "ff", "99", "81", "c3", "e7", "ff", "ff", "ff", "99", "66", "7e", "bd", "db", "e7", "ff", "00", "42", "24", "18", "18", "24", "42", "00", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "c3", "bd", "bd", "bd", "bd", "c3", "ff", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00", "00"];
 		paintTileFromBytesRow(testHexBytes);
