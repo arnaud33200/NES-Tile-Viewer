@@ -15,7 +15,7 @@
 	<script src="js/bootstrap.min.js"></script>
 
 </head>
-<body style="padding: 20px">
+<body style="padding: 20px; background: #c7c7c7;">
 
 	<div class="container"><div class="row">
 
@@ -39,10 +39,12 @@
 				<div class="card-body">
 
 					<table><tr>
+						<td><button type="button" class="btn btn-light" onclick="shiftColor(1)">◄</button></td>
 						<td><input class="colorPalettePicker" type="color" id="colorPicker1" onchange="onColorClicked(1)"></td>
 						<td><input class="colorPalettePicker" type="color" id="colorPicker2" onchange="onColorClicked(2)"></td>
 						<td><input class="colorPalettePicker" type="color" id="colorPicker3" onchange="onColorClicked(3)"></td>
 						<td><input class="colorPalettePicker" type="color" id="colorPicker4" onchange="onColorClicked(4)"></td>
+						<td><button type="button" class="btn btn-light" onclick="shiftColor(-1)">►</button></td>
 					</tr></table>
 
 					<div class="dropdown" style="padding-top: 10px">
@@ -185,6 +187,18 @@
 
 		function colorSelected(index) {
 			colorPalette = otherPalette[index].colors;
+			updateSelectedPalette(colorPalette);
+			paintTileFromBytesRow(currentBytes);
+		}
+
+		function shiftColor(orientation) {
+			var newColors = [];
+			for (var i = 0; i < colorPalette.length; i++) {
+				var index = (i + orientation) % (colorPalette.length);
+				index = index < 0 ? colorPalette.length -1 : index;
+				newColors[i] = colorPalette[index];
+			}
+			colorPalette = newColors;
 			updateSelectedPalette(colorPalette);
 			paintTileFromBytesRow(currentBytes);
 		}
