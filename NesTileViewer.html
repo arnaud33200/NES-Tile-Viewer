@@ -223,6 +223,26 @@
 			}
 		};
 
+		window.onresize = function(event) {
+			windowResizeEvent(false);
+		};
+
+		$(document).ready(function() {
+			windowResizeEvent(true);
+		});
+
+		function windowResizeEvent(ready) {
+			const root = document.documentElement;
+			const computedStyled = getComputedStyle(document.documentElement);
+
+			// Update right column container to stick to the middle column
+			// TODO: simplify or event setup variables in the css
+			const leftValue = computedStyled.getPropertyValue('--right-column-left-first-value');
+			const rightColumnWidth = parseInt(computedStyled.getPropertyValue('--right-column-width').replace("px", ""));
+			const leftMargin = ($(window).width() * leftValue / 1680) - (($(window).width()-1680) * 35 / 383) - ((rightColumnWidth-250) * 102 / 112);
+			root.style.setProperty('--right-column-left', leftMargin + "px");
+		}
+
 		// Example 
 		const testHexBytes = ["ff", "ff", "99", "81", "c3", "e7", "ff", "ff", "ff", "99", "66", "7e", "bd", "db", "e7", "ff", "00", "42", "24", "18", "18", "24", "42", "00", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "c3", "bd", "bd", "bd", "bd", "c3", "ff", "ff", "ff", "99", "81", "c3", "e7", "ff", "ff", "ff", "99", "66", "7e", "bd", "db", "e7", "ff", "00", "42", "24", "18", "18", "24", "42", "00", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "c3", "bd", "bd", "bd", "bd", "c3", "ff", "ff", "ff", "99", "81", "c3", "e7", "ff", "ff", "ff", "99", "66", "7e", "bd", "db", "e7", "ff", "00", "42", "24", "18", "18", "24", "42", "00", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "c3", "bd", "bd", "bd", "bd", "c3", "ff", "ff", "ff", "99", "81", "c3", "e7", "ff", "ff", "ff", "99", "66", "7e", "bd", "db", "e7", "ff", "00", "42", "24", "18", "18", "24", "42", "00", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "c3", "bd", "bd", "bd", "bd", "c3", "ff", "ff", "ff", "99", "81", "c3", "e7", "ff", "ff", "ff", "99", "66", "7e", "bd", "db", "e7", "ff", "00", "42", "24", "18", "18", "24", "42", "00", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "c3", "bd", "bd", "bd", "bd", "c3", "ff", "ff", "ff", "99", "81", "c3", "e7", "ff", "ff", "ff", "99", "66", "7e", "bd", "db", "e7", "ff", "00", "42", "24", "18", "18", "24", "42", "00", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "c3", "bd", "bd", "bd", "bd", "c3", "ff", "ff", "ff", "99", "81", "c3", "e7", "ff", "ff", "ff", "99", "66", "7e", "bd", "db", "e7", "ff", "00", "42", "24", "18", "18", "24", "42", "00", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "c3", "bd", "bd", "bd", "bd", "c3", "ff", "ff", "ff", "99", "81", "c3", "e7", "ff", "ff", "ff", "99", "66", "7e", "bd", "db", "e7", "ff", "00", "42", "24", "18", "18", "24", "42", "00", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "c3", "bd", "bd", "bd", "bd", "c3", "ff", "ff", "ff", "99", "81", "c3", "e7", "ff", "ff", "ff", "99", "66", "7e", "bd", "db", "e7", "ff", "00", "42", "24", "18", "18", "24", "42", "00", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "c3", "bd", "bd", "bd", "bd", "c3", "ff"];
 		currentBytes = testHexBytes;
