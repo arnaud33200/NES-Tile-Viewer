@@ -24,11 +24,21 @@ body {
 	right: 10px;
 }
 
-textarea.form-control {
+textarea.fullFile {
 	height: 400px;
 }
 
 .codeBlock {
 	color: #e83e8c;
 	word-wrap: break-word;
+}
+
+.colorOptionCell {
+	width: 45px;
+	height: 30px;
+}
+
+.colorOptionBlock {
+	width: 20px;
+	height: 20px;
 }

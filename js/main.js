@@ -2,6 +2,8 @@
 var previewTilePixelSize = 0;
 var previewTilePixelPadding = 0;
 
+var brushColorIndex = -1;
+
 // ################################################################################
 
 function loadFileBytes(file) {
@@ -27,6 +29,7 @@ function refreshTileViewerCanvas() {
 	// refresh palette
 	colorPalette.forEach(function(color, i) {
 		document.getElementById('colorPicker' + (i+1)).value = color;	
+		document.getElementById('brushColor' + (i+1)).style.backgroundColor = color;	
 	});	
 }
 
@@ -53,11 +56,27 @@ function cleanSelectedPreview() {
 	document.getElementById("previewTileHex").innerHTML = "";
 }
 
+function brushColorSelected(index) {
+	brushColorIndex = index;
+}
+
+function fillAllPixel() {
+	for (var y = 0; y < tileWidthPixelCount; y++) {
+		for (var x = 0; x < tileWidthPixelCount; x++) {
+			changeTilePreviewPixelColor({ x: x, y: y });
+		}
+	}
+	refreshTileViewerCanvas();	
+}
+
 function onPreviewCanvasClicked(e) {
 	const pixelSize = previewTilePixelSize + previewTilePixelPadding;
 	const coordinate = getPixelCoordinateInCanvas(e.layerX, e.layerY, pixelSize);
-	console.log("x: " + coordinate.x + ", y: " + coordinate.y);
+	changeTilePreviewPixelColor(coordinate);
+	refreshTileViewerCanvas();	
+}
 
+function changeTilePreviewPixelColor(coordinate) {
 	const hexLayout1 = currentBytes[selectedByteIndex + coordinate.y];
 	const hexLayout2 = currentBytes[selectedByteIndex + coordinate.y + tileWidthPixelCount];
 
@@ -65,7 +84,12 @@ function onPreviewCanvasClicked(e) {
 	var binaryLayout2 = hexToBinary(byteToHexString(hexLayout2));
 
 	var binarySum = parseInt(binaryLayout1.charAt(coordinate.x)) + (2 * parseInt(binaryLayout2.charAt(coordinate.x)));
-	binarySum = (binarySum + 1) % 4;
+	if (brushColorIndex < 0) {
+		binarySum = (binarySum + 1) % 4;
+	} else {
+		binarySum = brushColorIndex;
+	}
+
 	if (binarySum == 1 || binarySum == 3) {
 		binaryLayout1 = binaryLayout1.replaceAt(coordinate.x, "1");
 	} else {
@@ -79,9 +103,7 @@ function onPreviewCanvasClicked(e) {
 	}
 
 	currentBytes[selectedByteIndex + coordinate.y] = binaryToHex(binaryLayout1);
-	currentBytes[selectedByteIndex + coordinate.y + tileWidthPixelCount] = binaryToHex(binaryLayout2);
-
-	refreshTileViewerCanvas();
+	currentBytes[selectedByteIndex + coordinate.y + tileWidthPixelCount] = binaryToHex(binaryLayout2);	
 }
 
 function buildOtherColorPaletteTable(dropdown) {

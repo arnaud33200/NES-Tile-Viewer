@@ -106,15 +106,44 @@
 
 		<div style="margin-left: 330px; position: fixed; right: 20px; width: 250px">
 			<div class="card shadow">
-				<div class="card-header">Selection</div>
+				<div class="card-header">Selected Tile</div>
 				<div class="card-body">
 					<canvas id="previewCanvas" width="200" height="200"></canvas>
-					<code class="text-center" id="previewTileHex"></code>
+
+					<hr>
+
+					<table>
+						<tr>
+							<td class="colorOptionCell"><div class="colorOptionBlock" style="background: black" id="brushColor1"></div></td>
+							<td class="colorOptionCell"><div class="colorOptionBlock" style="background: black" id="brushColor2"></div></td>
+							<td class="colorOptionCell"><div class="colorOptionBlock" style="background: black" id="brushColor3"></div></td>
+							<td class="colorOptionCell"><div class="colorOptionBlock" style="background: black" id="brushColor4"></div></td>
+							<td class="colorOptionCell"><div class="colorOptionBlock">+1</div></td>
+						</tr>
+						<tr>
+							<td class="colorOptionCell"><input class="colorOptionBlock" type="radio" name="inlineRadioOptions" onclick="brushColorSelected(0)"></td>
+							<td class="colorOptionCell"><input class="colorOptionBlock" type="radio" name="inlineRadioOptions" onclick="brushColorSelected(1)"></td>
+							<td class="colorOptionCell"><input class="colorOptionBlock" type="radio" name="inlineRadioOptions" onclick="brushColorSelected(2)"></td>
+							<td class="colorOptionCell"><input class="colorOptionBlock" type="radio" name="inlineRadioOptions" onclick="brushColorSelected(3)"></td>
+							<td class="colorOptionCell"><input class="colorOptionBlock" type="radio" name="inlineRadioOptions" onclick="brushColorSelected(-1)" checked></td>
+						</tr>
+					</table>	
+
+					<button type="button" class="btn btn-secondary" onclick="fillAllPixel()">Fill All Pixel</button>				
+				</div>
+			</div>
+
+			<div class="card shadow" style="margin-top: 20px">
+				<div class="card-header">Tile's Hex</div>
+				<div class="card-body">
+					<code><textarea style="padding: 10px; font-size: 12pt;" id="previewTileHex" class="form-control codeBlock" readonly></textarea></code>
 				</div>
 			</div>
 		</div>
 
-	</div></div>
+	</div>
+
+</div></div>
 
 <!-- <div class="modal-dialog modal-dialog-scrollable" id="viewFileModal">
 		<p>MODAL HERE</p>
@@ -130,7 +159,7 @@
 					</button>
 				</div>
 				<div class="modal-body">
-					<code><textarea id="fileBody" class="form-control codeBlock" readonly></textarea></code>
+					<code><textarea id="fileBody" class="fullFile form-control codeBlock" readonly></textarea></code>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" onclick="copyBytesInClipboard()">Copy</button>
