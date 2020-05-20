@@ -46,9 +46,8 @@ function getTileBytesIndexFromCoordinate(x, y) {
 }
 
 function getPixelCoordinateInCanvas(x, y, pixelSize) {
-	const indexX = Math.floor(x / pixelSize);
 	return {
-		x: (indexX >= tilePerRow ? tilePerRow - 1 : indexX),
+		x: Math.floor(x / pixelSize),
 		y: Math.floor(y / pixelSize)
 	};
 }
