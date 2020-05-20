@@ -121,11 +121,11 @@
 							<td class="colorOptionCell"><div class="colorOptionBlock">+1</div></td>
 						</tr>
 						<tr>
-							<td class="colorOptionCell"><input class="colorOptionBlock" type="radio" name="inlineRadioOptions" onclick="brushColorSelected(0)"></td>
-							<td class="colorOptionCell"><input class="colorOptionBlock" type="radio" name="inlineRadioOptions" onclick="brushColorSelected(1)"></td>
-							<td class="colorOptionCell"><input class="colorOptionBlock" type="radio" name="inlineRadioOptions" onclick="brushColorSelected(2)"></td>
-							<td class="colorOptionCell"><input class="colorOptionBlock" type="radio" name="inlineRadioOptions" onclick="brushColorSelected(3)"></td>
-							<td class="colorOptionCell"><input class="colorOptionBlock" type="radio" name="inlineRadioOptions" onclick="brushColorSelected(-1)" checked></td>
+							<td class="colorOptionCell"><input class="colorOptionBlock" type="radio" id="brushColorCheck1" name="inlineRadioOptions" onclick="brushColorSelected(0)"></td>
+							<td class="colorOptionCell"><input class="colorOptionBlock" type="radio" id="brushColorCheck2" name="inlineRadioOptions" onclick="brushColorSelected(1)"></td>
+							<td class="colorOptionCell"><input class="colorOptionBlock" type="radio" id="brushColorCheck3" name="inlineRadioOptions" onclick="brushColorSelected(2)"></td>
+							<td class="colorOptionCell"><input class="colorOptionBlock" type="radio" id="brushColorCheck4" name="inlineRadioOptions" onclick="brushColorSelected(3)"></td>
+							<td class="colorOptionCell"><input class="colorOptionBlock" type="radio" id="brushColorCheck5" name="inlineRadioOptions" onclick="brushColorSelected(-1)" checked></td>
 						</tr>
 					</table>	
 
@@ -204,6 +204,17 @@
 			document.execCommand("copy");
 			copyText.setSelectionRange(0, 0);
 		}
+
+		document.onkeypress = function(e) {
+			switch(e.key) {
+				case "1": brushColorSelected(0); break;
+				case "2": brushColorSelected(1); break;
+				case "3": brushColorSelected(2); break;
+				case "4": brushColorSelected(3); break;
+				case "5": brushColorSelected(-1); break;
+				case "f": fillAllPixel(); break;
+			}
+		};
 
 		// Example 
 		const testHexBytes = ["ff", "ff", "99", "81", "c3", "e7", "ff", "ff", "ff", "99", "66", "7e", "bd", "db", "e7", "ff", "00", "42", "24", "18", "18", "24", "42", "00", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "c3", "bd", "bd", "bd", "bd", "c3", "ff", "ff", "ff", "99", "81", "c3", "e7", "ff", "ff", "ff", "99", "66", "7e", "bd", "db", "e7", "ff", "00", "42", "24", "18", "18", "24", "42", "00", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "c3", "bd", "bd", "bd", "bd", "c3", "ff", "ff", "ff", "99", "81", "c3", "e7", "ff", "ff", "ff", "99", "66", "7e", "bd", "db", "e7", "ff", "00", "42", "24", "18", "18", "24", "42", "00", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "c3", "bd", "bd", "bd", "bd", "c3", "ff", "ff", "ff", "99", "81", "c3", "e7", "ff", "ff", "ff", "99", "66", "7e", "bd", "db", "e7", "ff", "00", "42", "24", "18", "18", "24", "42", "00", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "c3", "bd", "bd", "bd", "bd", "c3", "ff", "ff", "ff", "99", "81", "c3", "e7", "ff", "ff", "ff", "99", "66", "7e", "bd", "db", "e7", "ff", "00", "42", "24", "18", "18", "24", "42", "00", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "c3", "bd", "bd", "bd", "bd", "c3", "ff", "ff", "ff", "99", "81", "c3", "e7", "ff", "ff", "ff", "99", "66", "7e", "bd", "db", "e7", "ff", "00", "42", "24", "18", "18", "24", "42", "00", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "c3", "bd", "bd", "bd", "bd", "c3", "ff", "ff", "ff", "99", "81", "c3", "e7", "ff", "ff", "ff", "99", "66", "7e", "bd", "db", "e7", "ff", "00", "42", "24", "18", "18", "24", "42", "00", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "c3", "bd", "bd", "bd", "bd", "c3", "ff", "ff", "ff", "99", "81", "c3", "e7", "ff", "ff", "ff", "99", "66", "7e", "bd", "db", "e7", "ff", "00", "42", "24", "18", "18", "24", "42", "00", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "c3", "bd", "bd", "bd", "bd", "c3", "ff", "ff", "ff", "99", "81", "c3", "e7", "ff", "ff", "ff", "99", "66", "7e", "bd", "db", "e7", "ff", "00", "42", "24", "18", "18", "24", "42", "00", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "ff", "c3", "bd", "bd", "bd", "bd", "c3", "ff"];

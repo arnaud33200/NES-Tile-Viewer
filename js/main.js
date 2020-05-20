@@ -58,6 +58,8 @@ function cleanSelectedPreview() {
 
 function brushColorSelected(index) {
 	brushColorIndex = index;
+	var checkBoxNumber = index >= 0 ? index + 1 : 5
+	document.getElementById('brushColorCheck' + checkBoxNumber).checked = true;
 }
 
 function fillAllPixel() {
