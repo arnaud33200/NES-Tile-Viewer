@@ -1,3 +1,38 @@
+:root {
+	--containers-left-margin: -35px;
+
+	--left-column-width: 300px;
+
+	--middle-column-space-left: 30px;
+	--middle-column-margin-left: calc(var(--left-column-width) + var(--middle-column-space-left) + var(--containers-left-margin));
+
+	--right-column-width: 250px;
+	--right-column-margin-left: calc(var(--right-column-width) + var(--containers-left-margin));
+	--right-column-left: 890px;
+	--right-column-left-first-value: 972;
+}
+
+/* *************************************************************** */
+
+.left-card-column {
+	margin-left: var(--containers-left-margin);
+	position: fixed; 
+	width: var(--left-column-width);
+}
+
+.middle-card-column {
+	margin-left: var(--middle-column-margin-left);
+}
+
+.right-card-column {
+	margin-left: var(--right-column-margin-left); 
+	position: fixed; 
+	left: var(--right-column-left);	
+	width: var(--right-column-width);
+}
+
+/* *************************************************************** */
+
 body {
 	background-image: url("../tile_background.svg");
 	/*background: #c7c7c7;*/
