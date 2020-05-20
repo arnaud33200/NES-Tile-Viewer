@@ -102,11 +102,21 @@ function paintSingeTile(context, pixelSize, bytes, byteIndex, offetX, offetY, pi
 }
 
 function getTileHexString(bytes, byteIndex) {
+	return getTileHexLengthString(bytes, byteIndex, (tileWidthPixelCount * layerCount));
+}
+
+function convertAllBytesToString(bytes) {
+	if (bytes == null) { return ""; }
+	return getTileHexLengthString(bytes, 0, bytes.length);	
+}
+
+function getTileHexLengthString(bytes, byteIndex, length) {
 	var tileHexString = "";
-	for (var y = byteIndex; y < byteIndex + (tileWidthPixelCount * layerCount); y++) {
-		const space = (y - byteIndex) % 2 == 0 ? " " : "";
+	for (var y = byteIndex; y < byteIndex + length; y++) {
+		const returnChar = (y - byteIndex) > 0 && (y - byteIndex + 1) % 16 == 0 ? "</br>" : "";
+		const space = returnChar.length == 0 && (y - byteIndex) % 2 == 0 ? " " : "";
 		const hexString = dataToHexString(bytes, y);
-		tileHexString += (tileHexString.length == 0 ? "" : space) + hexString;
+		tileHexString += (tileHexString.length == 0 ? "" : space) + hexString + returnChar;
 	}
 	return tileHexString;
 }

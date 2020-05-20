@@ -17,3 +17,9 @@ body {
     height: 20px;
     left: 5px;
 }
+
+.downButton {
+	position: absolute;
+    top: 5px;
+    right: 10px;
+}
