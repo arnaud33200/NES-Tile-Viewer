@@ -1,25 +1,34 @@
 body {
-  background-image: url("../tile_background.svg");
-  /*background: #c7c7c7;*/
-  background-repeat: repeat;
-  padding: 20px;
+	background-image: url("../tile_background.svg");
+	/*background: #c7c7c7;*/
+	background-repeat: repeat;
+	padding: 20px;
 }
 
 .colorPalettePicker {
 	width: 40px;
-    height: 44px;
-    border: 0px;
-    padding: 0px;
+	height: 44px;
+	border: 0px;
+	padding: 0px;
 }
 
 .paletteSelector {
 	width: 20px;
-    height: 20px;
-    left: 5px;
+	height: 20px;
+	left: 5px;
 }
 
 .downButton {
 	position: absolute;
-    top: 5px;
-    right: 10px;
+	top: 5px;
+	right: 10px;
+}
+
+textarea.form-control {
+	height: 400px;
+}
+
+.codeBlock {
+	color: #e83e8c;
+	word-wrap: break-word;
 }

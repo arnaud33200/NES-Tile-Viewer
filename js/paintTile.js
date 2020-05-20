@@ -113,8 +113,8 @@ function convertAllBytesToString(bytes) {
 function getTileHexLengthString(bytes, byteIndex, length) {
 	var tileHexString = "";
 	for (var y = byteIndex; y < byteIndex + length; y++) {
-		const returnChar = (y - byteIndex) > 0 && (y - byteIndex + 1) % 16 == 0 ? "</br>" : "";
-		const space = returnChar.length == 0 && (y - byteIndex) % 2 == 0 ? " " : "";
+		const returnChar = (y - byteIndex) > 0 && (y - byteIndex + 1) % 16 == 0 ? "\n" : "";
+		const space = y % 16 != 0 && (y - byteIndex) % 2 == 0 ? " " : "";
 		const hexString = dataToHexString(bytes, y);
 		tileHexString += (tileHexString.length == 0 ? "" : space) + hexString + returnChar;
 	}
