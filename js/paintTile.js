@@ -28,31 +28,6 @@ var currentBytes = null;
 
 // ################################################################################
 
-function dataToHexString(bytes, offset) {
-	var bytedata = "";
-	var size = 1;
-
-	for (var i = 0; i < size; i++) {
-		var c = (bytes[offset+i]).toString(16);
-		bytedata += c.length == 1 ? "0"+c : c;
-	}
-
-	var outputText = "";
-	for (var i=0; i<size; i++) {
-		var x = bytedata.substring( i*2 , i*2+2 );
-		outputText += x + ((i<size-1) ? " " : "" );
-	}		
-	return outputText;
-}
-
-function hexToBinary(hex) {
-	return ("00000000" + (parseInt(hex, 16)).toString(2)).substr(-8);
-}
-
-function dataToBinary(bytes, offset) {
-	return hexToBinary(dataToHexString(bytes, offset));
-}
-
 function getTileXyIndex(tileIndex, hexPerTile, tilePerRow) {
 	return {
 		x: Math.floor(tileIndex / hexPerTile) % tilePerRow,
@@ -68,6 +43,14 @@ function getTileBytesIndexFromCoordinate(x, y) {
 	+ (Math.floor(y / tileSize) * tilePerRow);
 
 	return tileIndex * hexPerTile;
+}
+
+function getPixelCoordinateInCanvas(x, y, pixelSize) {
+	const indexX = Math.floor(x / pixelSize);
+	return {
+		x: (indexX >= tilePerRow ? tilePerRow - 1 : indexX),
+		y: Math.floor(y / pixelSize)
+	};
 }
 
 function getTilePixelSize() {
@@ -126,4 +109,41 @@ function getTileHexString(bytes, byteIndex) {
 		tileHexString += (tileHexString.length == 0 ? "" : space) + hexString;
 	}
 	return tileHexString;
+}
+
+// ################################################################################
+// ### CONVERTER
+
+function dataToHexString(bytes, offset) {
+	var bytedata = "";
+	var size = 1;
+
+	for (var i = 0; i < size; i++) {
+		var c = (bytes[offset+i]).toString(16);
+		bytedata += c.length == 1 ? "0"+c : c;
+	}
+
+	var outputText = "";
+	for (var i=0; i<size; i++) {
+		var x = bytedata.substring( i*2 , i*2+2 );
+		outputText += x + ((i<size-1) ? " " : "" );
+	}		
+	return outputText;
+}
+
+function byteToHexString(byte) {
+	var c = byte.toString(16);
+	return c.length == 1 ? "0"+ c : c;
+}
+
+function hexToBinary(hex) {
+	return ("00000000" + (parseInt(hex, 16)).toString(2)).substr(-8);
+}
+
+function binaryToHex(binary) {
+	return  parseInt(binary, 2);
+}
+
+function dataToBinary(bytes, offset) {
+	return hexToBinary(dataToHexString(bytes, offset));
 }

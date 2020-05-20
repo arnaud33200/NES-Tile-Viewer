@@ -129,6 +129,10 @@
 			updateTilePreviewCanvas();
 		});
 
+		document.getElementById("previewCanvas").addEventListener('click', (e) => {
+			onPreviewCanvasClicked(e);
+		});
+
 		var dropdown = document.getElementById('dropdownOtherColor');
 		buildOtherColorPaletteTable(dropdown)		
 

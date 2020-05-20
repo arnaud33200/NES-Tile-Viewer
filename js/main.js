@@ -1,3 +1,9 @@
+
+var previewTilePixelSize = 0;
+var previewTilePixelPadding = 0;
+
+// ################################################################################
+
 function loadFileBytes(file) {
 	if (!file) { return; }
 
@@ -31,9 +37,9 @@ function updateTilePreviewCanvas() {
 	context.clearRect(0, 0, canvas.width, canvas.height);
 	if (selectedByteIndex < 0) { return; }
 
-	const pixelPadding = 2;
-	const size = Math.floor((canvas.width - (tileWidthPixelCount * pixelPadding)) / tileWidthPixelCount);
-	paintSingeTile(context, size, currentBytes, selectedByteIndex, 0, 0, pixelPadding);
+	previewTilePixelPadding = 2;
+	previewTilePixelSize = Math.floor((canvas.width - (tileWidthPixelCount * previewTilePixelPadding)) / tileWidthPixelCount);
+	paintSingeTile(context, previewTilePixelSize, currentBytes, selectedByteIndex, 0, 0, previewTilePixelPadding);
 
 	document.getElementById("previewTileHex").innerHTML = getTileHexString(currentBytes, selectedByteIndex);
 }
@@ -45,6 +51,37 @@ function cleanSelectedPreview() {
 	context.clearRect(0, 0, canvas.width, canvas.height);
 
 	document.getElementById("previewTileHex").innerHTML = "";
+}
+
+function onPreviewCanvasClicked(e) {
+	const pixelSize = previewTilePixelSize + previewTilePixelPadding;
+	const coordinate = getPixelCoordinateInCanvas(e.layerX, e.layerY, pixelSize);
+	console.log("x: " + coordinate.x + ", y: " + coordinate.y);
+
+	const hexLayout1 = currentBytes[selectedByteIndex + coordinate.y];
+	const hexLayout2 = currentBytes[selectedByteIndex + coordinate.y + tileWidthPixelCount];
+
+	var binaryLayout1 = hexToBinary(byteToHexString(hexLayout1));
+	var binaryLayout2 = hexToBinary(byteToHexString(hexLayout2));
+
+	var binarySum = parseInt(binaryLayout1.charAt(coordinate.x)) + (2 * parseInt(binaryLayout2.charAt(coordinate.x)));
+	binarySum = (binarySum + 1) % 4;
+	if (binarySum == 1 || binarySum == 3) {
+		binaryLayout1 = binaryLayout1.replaceAt(coordinate.x, "1");
+	} else {
+		binaryLayout1 = binaryLayout1.replaceAt(coordinate.x, "0");
+	}
+
+	if (binarySum == 2 || binarySum == 3) {
+		binaryLayout2 = binaryLayout2.replaceAt(coordinate.x, "1");
+	} else {
+		binaryLayout2 = binaryLayout2.replaceAt(coordinate.x, "0");
+	}
+
+	currentBytes[selectedByteIndex + coordinate.y] = binaryToHex(binaryLayout1);
+	currentBytes[selectedByteIndex + coordinate.y + tileWidthPixelCount] = binaryToHex(binaryLayout2);
+
+	refreshTileViewerCanvas();
 }
 
 function buildOtherColorPaletteTable(dropdown) {
@@ -133,6 +170,10 @@ function updatePixelPadding(value) {
 
 // ################################################################################
 // ### UTILS
+
+String.prototype.replaceAt = function(index, replacement) {
+    return this.substr(0, index) + replacement + this.substr(index + replacement.length);
+}
 
 function createElement(name, attributes) {
 	var element = document.createElement(name);
