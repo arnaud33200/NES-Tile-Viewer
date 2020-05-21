@@ -1,32 +1,30 @@
 :root {
-	--containers-left-margin: -35px;
-
 	--left-column-width: 300px;
+	--right-column-width: 240px;
+}
 
-	--middle-column-space-left: 30px;
-	--middle-column-margin-left: calc(var(--left-column-width) + var(--middle-column-space-left) + var(--containers-left-margin));
+/* *************************************************************** */
+/*OVERRIDE Boostrap*/
 
-	--right-column-width: 250px;
-	--right-column-margin-left: calc(var(--right-column-width) + var(--containers-left-margin));
-	--right-column-left: 890px;
-	--right-column-left-first-value: 972;
+*, ::after, ::before {
+	/* prevent the left column to be wrapped */
+     box-sizing: unset; 
 }
 
 /* *************************************************************** */
 
 .left-card-column {
-	margin-left: var(--containers-left-margin);
-	position: fixed; 
 	width: var(--left-column-width);
 }
 
 .middle-card-column {
-	margin-left: var(--middle-column-margin-left);
+	padding-right: 15px;
+    padding-left: 15px;
 }
 
 .middle-card-body {
 	overflow: scroll;
-    height: 550px;
+    height: 85vh;
     margin-top: 20px;
     margin-bottom: 20px;
     padding-top: 0px;
@@ -34,9 +32,6 @@
 }
 
 .right-card-column {
-	margin-left: var(--right-column-margin-left); 
-	position: fixed; 
-	left: var(--right-column-left);	
 	width: var(--right-column-width);
 }
 
@@ -85,4 +80,10 @@ textarea.fullFile {
 .colorOptionBlock {
 	width: 20px;
 	height: 20px;
+}
+
+.previewTileHexBox {
+	padding: 10px;
+    font-size: 11pt;
+    width: 177px;
 }
