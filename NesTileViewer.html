@@ -2,6 +2,8 @@
 <html>
 <head>
 	<title>NES Tile Viewer</title>
+	<link rel="shortcut icon" href="images/tabicon.svg">
+
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -26,7 +28,7 @@
 		<div class="left-card-column">
 
 			<h2 style="padding-bottom: 5px">
-				<!-- <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/NES-Cartridge.jpg/250px-NES-Cartridge.jpg" style="width: 50px;"> -->
+				<img src="images/tabicon.svg" style="width: 44px; margin-bottom: 8px;">
 				NES Tile Viewer
 			</h2>
 
@@ -121,11 +123,11 @@
 
 					<table>
 						<tr>
-							<td class="colorOptionCell"><div class="colorOptionBlock" style="background: black" id="brushColor1"></div></td>
-							<td class="colorOptionCell"><div class="colorOptionBlock" style="background: black" id="brushColor2"></div></td>
-							<td class="colorOptionCell"><div class="colorOptionBlock" style="background: black" id="brushColor3"></div></td>
-							<td class="colorOptionCell"><div class="colorOptionBlock" style="background: black" id="brushColor4"></div></td>
-							<td class="colorOptionCell"><div class="colorOptionBlock">+1</div></td>
+							<td class="colorOptionCell"><div class="colorOptionBlock" onclick="brushColorSelected(0)" style="background: black" id="brushColor1" ></div></td>
+							<td class="colorOptionCell"><div class="colorOptionBlock" onclick="brushColorSelected(1)" style="background: black" id="brushColor2" ></div></td>
+							<td class="colorOptionCell"><div class="colorOptionBlock" onclick="brushColorSelected(2)" style="background: black" id="brushColor3" ></div></td>
+							<td class="colorOptionCell"><div class="colorOptionBlock" onclick="brushColorSelected(3)" style="background: black" id="brushColor4" ></div></td>
+							<td class="colorOptionCell"><div class="colorOptionBlock" onclick="brushColorSelected(-1)">+1</div></td>
 						</tr>
 						<tr>
 							<td class="colorOptionCell"><input class="colorOptionBlock" type="radio" id="brushColorCheck1" name="inlineRadioOptions" onclick="brushColorSelected(0)"></td>

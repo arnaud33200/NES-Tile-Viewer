@@ -3,12 +3,23 @@
 	--right-column-width: 240px;
 }
 
+@font-face {
+			font-family: 'titleFont';
+			src: url('../fonts/YanoneKaffeesatz-VariableFont_wght.ttf');
+		}
+
 /* *************************************************************** */
 /*OVERRIDE Boostrap*/
 
 *, ::after, ::before {
 	/* prevent the left column to be wrapped */
-     box-sizing: unset; 
+	box-sizing: unset; 
+}
+
+h2 {
+	font-family: 'titleFont';
+    font-size: 3.2rem;
+    font-weight: bold;
 }
 
 /* *************************************************************** */
@@ -19,16 +30,16 @@
 
 .middle-card-column {
 	padding-right: 15px;
-    padding-left: 15px;
+	padding-left: 15px;
 }
 
 .middle-card-body {
 	overflow: scroll;
-    height: 85vh;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    padding-top: 0px;
-    padding-bottom: 0px;
+	height: 85vh;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	padding-top: 0px;
+	padding-bottom: 0px;
 }
 
 .right-card-column {
@@ -38,7 +49,7 @@
 /* *************************************************************** */
 
 body {
-	background-image: url("../tile_background.svg");
+	background-image: url("../images/tile_background.svg");
 	/*background: #c7c7c7;*/
 	background-repeat: repeat;
 	padding: 20px;
@@ -65,6 +76,8 @@ body {
 
 textarea.fullFile {
 	height: 300px;
+	width: 440px;	
+	font-size: 18px;
 }
 
 .codeBlock {
@@ -84,6 +97,6 @@ textarea.fullFile {
 
 .previewTileHexBox {
 	padding: 10px;
-    font-size: 11pt;
-    width: 177px;
+	font-size: 11pt;
+	width: 177px;
 }
