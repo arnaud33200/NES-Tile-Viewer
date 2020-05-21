@@ -47,6 +47,8 @@ function updateTilePreviewCanvas() {
 	paintSingeTile(context, previewTilePixelSize, currentBytes, selectedByteIndex, 0, 0, previewTilePixelPadding);
 
 	document.getElementById("previewTileHex").innerHTML = getTileHexString(currentBytes, selectedByteIndex);
+
+	document.getElementById("tileNumberLabel").innerHTML = "(#" + Math.floor(selectedByteIndex / (tileWidthPixelCount * layerCount) + 1) + ")";
 }
 
 function cleanSelectedPreview() {	
@@ -56,6 +58,7 @@ function cleanSelectedPreview() {
 	context.clearRect(0, 0, canvas.width, canvas.height);
 
 	document.getElementById("previewTileHex").innerHTML = "";
+	document.getElementById("tileNumberLabel").innerHTML = "";
 }
 
 function brushColorSelected(index) {
