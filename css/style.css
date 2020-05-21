@@ -24,6 +24,15 @@
 	margin-left: var(--middle-column-margin-left);
 }
 
+.middle-card-body {
+	overflow: scroll;
+    height: 550px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
 .right-card-column {
 	margin-left: var(--right-column-margin-left); 
 	position: fixed; 

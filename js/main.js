@@ -24,6 +24,8 @@ function loadFileBytes(file) {
 }
 
 function refreshTileViewerCanvas() {
+	document.getElementById("totalTilesBadges").innerHTML = currentBytes.length / (tileWidthPixelCount * layerCount);
+
 	paintAllTilesFromBytesRow(currentBytes);
 	updateTilePreviewCanvas();
 	// refresh palette
